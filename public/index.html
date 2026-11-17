@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NexusAI – Autonomous Multi-Agent Intelligence</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root {
+  --bg: #090d12;
+  --panel: #111720;
+  --panel-border: #1e293b;
+  --panel-hover: #16202c;
+  --accent: #14b8a6;
+  --accent-glow: rgba(20, 184, 166, 0.25);
+  --accent-soft: rgba(20, 184, 166, 0.1);
+  --ink: #f1f5f9;
+  --ink-soft: #cbd5e1;
+  --muted: #94a3b8;
+  --muted-dark: #64748b;
+  --font-sans: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Source Serif 4", Georgia, serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --ok: #34d399;
+  --run: #fbbf24;
+  --err: #f87171;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ================= LANDING PAGE STYLES ================= */
+#landingView {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at 50% -10%, rgba(20, 184, 166, 0.15), transparent 60%),
+              radial-gradient(circle at 85% 30%, rgba(52, 211, 153, 0.05), transparent 40%),
+              var(--bg);
+  animation: fadeIn 0.4s ease;
+}
+
+.landing-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px clamp(20px, 6vw, 64px);
+  border-bottom: 1px solid rgba(30, 41, 59, 0.6);
+  background: rgba(9, 13, 18, 0.7);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+.brand-logo::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--accent);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.nav-badge {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  padding: 5px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.landing-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 72px clamp(20px, 6vw, 40px) 40px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  padding: 6px 14px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 24px;
+}
+
+.hero-title {
+  font-size: clamp(38px, 6vw, 64px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 22px;
+}
+.hero-title span {
+  background: linear-gradient(135deg, var(--accent) 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-desc {
+  font-size: clamp(16px, 2.2vw, 19px);
+  color: var(--muted);
+  max-width: 680px;
+  line-height: 1.65;
+  margin-bottom: 36px;
+}
+
+.btn-hero {
+  background: linear-gradient(135deg, var(--accent) 0%, #0d9488 100%);
+  color: #041e1c;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 16px 36px;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 24px var(--accent-glow);
+  transition: all 0.25s ease;
+}
+.btn-hero:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(20, 184, 166, 0.4);
+  filter: brightness(1.08);
+}
+.btn-hero:active {
+  transform: translateY(0);
+}
+
+.hero-meta {
+  font-size: 13px;
+  color: var(--muted-dark);
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.landing-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 60px auto 40px;
+  padding: 0 clamp(20px, 6vw, 40px);
+}
+
+.feature-card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 26px 24px;
+  text-align: left;
+  transition: all 0.25s ease;
+}
+.feature-card:hover {
+  border-color: rgba(20, 184, 166, 0.4);
+  background: var(--panel-hover);
+  transform: translateY(-3px);
+}
+.feature-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.feature-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.feature-text {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.landing-footer {
+  text-align: center;
+  padding: 28px;
+  font-size: 13px;
+  color: var(--muted-dark);
+  border-top: 1px solid rgba(30, 41, 59, 0.5);
+}
+
+/* ================= RESEARCH APP STYLES ================= */
+#researchApp {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  min-height: 100vh;
+  animation: fadeIn 0.35s ease;
+}
+
+aside {
+  background: var(--panel);
+  border-right: 1px solid var(--panel-border);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.aside-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.back-btn {
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--muted);
+  font-size: 11.5px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.back-btn:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+
+h1 {
+  font-size: 20px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+h1::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.box {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 14px;
+}
+.box h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+}
+
+button {
+  cursor: pointer;
+  border-radius: 6px;
+  border: 0;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #041e1c;
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  background: #06090d;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 10px;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+  resize: vertical;
+}
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Multi-Agent Steps List */
+ol.steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+ol.steps li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--panel-border);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  background: rgba(255,255,255,0.02);
+  transition: all 0.2s;
+}
+li.running { color: var(--run); }
+li.running .dot { border-color: var(--run); color: var(--run); }
+li.done { color: var(--ink); }
+li.done .dot { background: var(--ok); border-color: var(--ok); color: #041e1c; font-weight: 800; }
+li.error .dot { background: var(--err); border-color: var(--err); color: #fff; }
+
+main {
+  padding: 40px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1000px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 28px;
+}
+.report-content {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.8;
+  margin-top: 16px;
+  color: var(--ink);
+}
+.report-content h1, .report-content h2, .report-content h3 {
+  font-family: var(--font-sans);
+  margin: 24px 0 12px;
+  color: var(--ink);
+}
+.report-content ul, .report-content ol { padding-left: 20px; margin-bottom: 14px; }
+.report-content li { margin-bottom: 4px; }
+.report-content hr { border: 0; border-top: 1px solid var(--panel-border); margin: 24px 0; }
+.critic-content {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  margin-top: 14px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 860px) {
+  #researchApp {
+    grid-template-columns: 1fr;
+  }
+  aside {
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--panel-border);
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 1. LANDING PAGE VIEW -->
+<div id="landingView">
+  <nav class="landing-nav">
+    <div class="brand-logo">NexusAI</div>
+    <div class="nav-actions">
+      <span class="nav-badge">v1.0 · Autonomous System</span>
+      <button class="btn-primary" id="navStartBtn" style="width: auto; padding: 8px 16px;">
+        Launch App →
+      </button>
+    </div>
+  </nav>
+
+  <section class="landing-hero">
+    <div class="hero-pill">✦ Autonomous Multi-Agent Intelligence System</div>
+    <h1 class="hero-title">
+      Deep Research, Automated.<br>
+      Driven by <span>Specialized AI Agents</span>.
+    </h1>
+    <p class="hero-desc">
+      NexusAI coordinates autonomous agents to search authoritative sources, scrape clean web content, synthesize rigorous reports with citations, and critically audit findings in real time.
+    </p>
+    <button class="btn-hero" id="startResearchBtn">
+      Start your research <span>→</span>
+    </button>
+    <div class="hero-meta">
+      <span>⚡ Gemini 3.5 Flash Lite</span>
+      <span>•</span>
+      <span>🔍 Tavily Search Engine</span>
+      <span>•</span>
+      <span>📡 Live SSE Streaming</span>
+      <span>•</span>
+      <span>📄 1-Click PDF Export</span>
+    </div>
+  </section>
+
+  <section class="landing-features">
+    <div class="feature-card">
+      <div class="feature-num">01 / Reconnaissance</div>
+      <h3 class="feature-title">Search & Scrape Agents</h3>
+      <p class="feature-text">
+        Formulates high-precision search queries across the web and scrapes deep article content while filtering out navigation noise and ads.
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">02 / Synthesis</div>
+      <h3 class="feature-title">Writer Agent</h3>
+      <p class="feature-text">
+        Consolidates complex cross-source research into an executive briefing, detailed key findings, and fully verified inline citations.
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">03 / Verification & Export</div>
+      <h3 class="feature-title">Critic Agent & PDF Export</h3>
+      <p class="feature-text">
+        Acts as an adversarial auditor scoring report depth and accuracy, followed by instant one-click publication-ready PDF download.
+      </p>
+    </div>
+  </section>
+
+  <footer class="landing-footer">
+    NexusAI © 2026 · Autonomous Multi-Agent Intelligence System
+  </footer>
+</div>
+
+<!-- 2. RESEARCH DASHBOARD VIEW -->
+<div id="researchApp" style="display: none;">
+  <aside>
+    <div class="aside-header">
+      <h1>NexusAI</h1>
+      <button class="back-btn" id="backToHomeBtn">← Home</button>
+    </div>
+    <p style="font-size: 12.5px; color: var(--muted);">Autonomous multi-agent intelligence system for deep research and synthesis.</p>
+
+    <div class="box">
+      <h3>1. Research Topic</h3>
+      <textarea id="queryInput" placeholder="e.g. Agentic AI developments in 2026"></textarea>
+      <button class="btn-primary" id="runBtn" style="margin-top: 10px;">Start Research</button>
+    </div>
+
+    <div class="box">
+      <h3>2. Agent Execution</h3>
+      <ol class="steps" id="steps">
+        <li id="step-1"><div class="dot">1</div><span>Search Agent (Find Sources)</span></li>
+        <li id="step-2"><div class="dot">2</div><span>Reader Agent (Scrape Best Resource)</span></li>
+        <li id="step-3"><div class="dot">3</div><span>Writer Chain (Draft Report)</span></li>
+        <li id="step-4"><div class="dot">4</div><span>Critic Chain (Review & Score)</span></li>
+      </ol>
+    </div>
+  </aside>
+
+  <main>
+    <div class="card" id="statusCard">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div>
+          <h2 id="statusTitle">System Idle</h2>
+          <p style="color: var(--muted); font-size: 14px; margin-top: 6px;">Enter a topic on the left to start multi-agent research.</p>
+        </div>
+        <button class="btn-primary" id="savePdfBtn" style="display:none; width: auto; padding: 10px 20px; font-size: 14px;">
+          📄 Save the Report (PDF)
+        </button>
+      </div>
+    </div>
+
+    <div class="card" id="reportCard" style="display:none;">
+      <h2>Final Research Report</h2>
+      <div class="report-content" id="reportText"></div>
+    </div>
+
+    <div class="card" id="criticCard" style="display:none;">
+      <h2>Critic Evaluation</h2>
+      <div class="critic-content" id="criticText"></div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+
+// ================= VIEW NAVIGATION =================
+function showApp() {
+  $("landingView").style.display = "none";
+  $("researchApp").style.display = "grid";
+  window.location.hash = "app";
+  $("queryInput").focus();
+}
+
+function showLanding() {
+  $("researchApp").style.display = "none";
+  $("landingView").style.display = "flex";
+  history.replaceState(null, null, " ");
+}
+
+$("startResearchBtn").addEventListener("click", showApp);
+$("navStartBtn").addEventListener("click", showApp);
+$("backToHomeBtn").addEventListener("click", showLanding);
+
+// Check if user reloaded with #app
+if (window.location.hash === "#app") {
+  showApp();
+}
+
+// ================= AGENT STEP TRACKING =================
+function setStep(stepNum, status) {
+  const el = $(`step-${stepNum}`);
+  if (!el) return;
+  el.className = status;
+  const dot = el.querySelector(".dot");
+  if (status === "done") dot.textContent = "✓";
+  else if (status === "running") dot.textContent = stepNum;
+  else if (status === "error") dot.textContent = "!";
+  else dot.textContent = stepNum;
+}
+
+function resetSteps() {
+  for (let i = 1; i <= 4; i++) setStep(i, "");
+}
+
+// ================= MULTI-AGENT EXECUTION =================
+$("runBtn").onclick = () => {
+  const topic = $("queryInput").value.trim();
+  if (!topic) return;
+
+  $("runBtn").disabled = true;
+  $("statusTitle").textContent = "Agents Working...";
+  resetSteps();
+  $("reportCard").style.display = "none";
+  $("criticCard").style.display = "none";
+  $("savePdfBtn").style.display = "none";
+
+  let reportContent = "";
+  let criticContent = "";
+
+  const evt = new EventSource(`/api/research?topic=${encodeURIComponent(topic)}`);
+
+  evt.addEventListener("progress", (e) => {
+    const { step, status, payload } = JSON.parse(e.data);
+    setStep(step, status);
+
+    if (step === 3 && status === "done") {
+      reportContent = payload;
+      $("reportCard").style.display = "block";
+      $("reportText").innerHTML = marked.parse(reportContent || "");
+    }
+    if (step === 4 && status === "done") {
+      criticContent = payload;
+      $("criticCard").style.display = "block";
+      $("criticText").innerHTML = marked.parse(criticContent || "");
+      // Show "Save the Report" PDF button when Critic finishes
+      $("savePdfBtn").style.display = "inline-flex";
+    }
+  });
+
+  evt.addEventListener("complete", () => {
+    $("statusTitle").textContent = "Research Completed";
+    $("runBtn").disabled = false;
+    $("savePdfBtn").style.display = "inline-flex";
+    evt.close();
+  });
+
+  evt.addEventListener("pipeline_error", (e) => {
+    const { message } = JSON.parse(e.data);
+    alert("Pipeline Error: " + message);
+    $("statusTitle").textContent = "Research Failed";
+    $("runBtn").disabled = false;
+    evt.close();
+  });
+
+  evt.onerror = () => {
+    $("runBtn").disabled = false;
+    evt.close();
+  };
+};
+
+// ================= PDF EXPORT =================
+$("savePdfBtn").onclick = () => {
+  const topic = $("queryInput").value.trim() || "Research Report";
+  
+  const container = document.createElement("div");
+  container.style.padding = "30px";
+  container.style.fontFamily = "'Georgia', serif";
+  container.style.color = "#111827";
+  container.style.backgroundColor = "#ffffff";
+  container.style.lineHeight = "1.7";
+
+  container.innerHTML = `
+    <div style="border-bottom: 2px solid #0f766e; padding-bottom: 12px; margin-bottom: 24px;">
+      <h1 style="font-size: 26px; color: #0f766e; margin: 0 0 6px 0; font-family: sans-serif;">NexusAI Intelligence Report</h1>
+      <p style="font-size: 14px; color: #4b5563; margin: 0;"><strong>Topic:</strong> ${topic}</p>
+      <p style="font-size: 12px; color: #9ca3af; margin: 4px 0 0 0;">Generated on: ${new Date().toLocaleString()}</p>
+    </div>
+
+    <div style="font-size: 15px; margin-bottom: 36px;">
+      ${$("reportText").innerHTML}
+    </div>
+
+    <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; page-break-before: auto;">
+      <h2 style="font-size: 18px; color: #0f766e; margin-bottom: 10px; font-family: sans-serif;">Critic Review & Evaluation</h2>
+      <div style="background-color: #f9fafb; border-left: 4px solid #0f766e; padding: 14px 18px; font-size: 13.5px; border-radius: 4px;">
+        ${$("criticText").innerHTML}
+      </div>
+    </div>
+  `;
+
+  const safeFilename = `${topic.replace(/[^a-zA-Z0-9_-]/g, "_")}_report.pdf`;
+
+  const opt = {
+    margin: [12, 12, 12, 12],
+    filename: safeFilename,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    pagebreak: { mode: ["avoid-all", "css", "legacy"] }
+  };
+
+  html2pdf().set(opt).from(container).save();
+};
+</script>
+</body>
+</html>
